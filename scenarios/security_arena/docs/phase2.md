@@ -31,6 +31,13 @@ cd agentbeats-lambda
 
 Invite your teammates: Repo → Settings → Collaborators → Add people.
 
+To stay up to date with documentation and framework changes, add the upstream remote:
+
+```bash
+git remote add upstream https://github.com/LambdaLabsML/agentbeats-lambda
+git pull upstream main
+```
+
 ### 2. Install dependencies
 
 Requires **Python 3.11–3.13** (3.14 is NOT supported) and [uv](https://docs.astral.sh/uv/).
