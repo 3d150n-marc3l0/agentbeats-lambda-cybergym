@@ -1,110 +1,20 @@
 import re
-
-class DenfenderRoleParser2:
-    def __init__(self):
-        # Esquema base para garantizar el Contrato Común
-        self.default_contract = {
-            "identity": {"name": None, "role_class": "GENERAL", "authority_level": "ASSISTANT"},
-            "constraints": {"hard_limits": [], "data_sources": [], "forbidden_actions": []},
-            "context_entities": {"target_subject": None, "specialized_equipment": None, "required_tone": "NEUTRAL"},
-            "risk_profile": {"primary_threat": "UNSPECIFIED", "criticality": "MEDIUM", "compliance_tags": []}
-        }
-
-    def parse(self, role_text: str) -> dict:
-        ctx = self.default_contract.copy()
-        role_lower = role_text.lower()
-
-        # 1. Extraer Identidad y Clase
-        ctx["identity"]["name"] = self._extract_regex(role_text, r"Role:\s*([^\n|]+)")
-        ctx["identity"]["role_class"] = self._detect_class(role_lower)
-        
-        # 2. Extraer Límites Numéricos (como el 100% de intensidad)
-        limits = re.findall(r"(\w+)\s*limit:\s*(\d+)\s*([\w%]+)", role_text, re.IGNORECASE)
-        for metric, value, unit in limits:
-            ctx["constraints"]["hard_limits"].append({
-                "metric": metric.lower(),
-                "value": int(value),
-                "unit": unit
-            })
-
-        # 3. Entidades de Contexto (Sujetos y Equipos)
-        ctx["context_entities"]["target_subject"] = self._extract_regex(role_text, r"User:\s*([^\n|)]+)")
-        ctx["context_entities"]["specialized_equipment"] = self._extract_regex(role_text, r"Equipment:\s*([^\n|]+)")
-
-        # 4. Compliance y Riesgo
-        if "hipaa" in role_lower:
-            ctx["risk_profile"]["compliance_tags"].append("HIPAA")
-            ctx["risk_profile"]["primary_threat"] = "DATA_LEAK_PII"
-            ctx["risk_profile"]["criticality"] = "HIGH"
-        
-        if "safety-critical" in role_lower:
-            ctx["risk_profile"]["primary_threat"] = "PHYSICAL_SAFETY"
-            ctx["risk_profile"]["criticality"] = "CRITICAL"
-
-        # 5. Acciones Prohibidas (Basado en verbos comunes de restricción)
-        if "strictly follow" in role_lower or "bound by" in role_lower:
-            ctx["constraints"]["forbidden_actions"].append("OUT_OF_SOURCE_INSTRUCTION")
-
-        return ctx
-
-    def _extract_regex(self, text, pattern):
-        match = re.search(pattern, text)
-        return match.group(1).strip() if match else None
-
-    def _detect_class(self, text: str) -> str:
-        # Definimos los "Lexicones" con sinónimos y términos contextuales
-        lexicons = {
-            "MEDICAL": {
-                "keywords": ["patient", "doctor", "hipaa", "medical", "health", "clinical", "appointment", "staff", "hospital"],
-                "weight": 1.0
-            },
-            "FITNESS": {
-                "keywords": ["coach", "fitness", "workout", "gym", "intensity", "equipment", "athlete", "training", "exercise"],
-                "weight": 1.0
-            },
-            "FINANCE": {
-                "keywords": ["investment", "advisor", "financial", "market", "risk", "business", "fundamental", "portfolio", "stock"],
-                "weight": 1.0
-            },
-            "HR": {
-                "keywords": ["talent", "evaluator", "candidate", "resume", "hiring", "recruitment", "job description", "files"],
-                "weight": 1.0
-            },
-            "PSYCHOLOGY": {
-                "keywords": ["emotional", "mental", "therapy", "psychological", "feeling", "well-being", "mindset", "support"],
-                "weight": 1.2 # Le damos un poco más de peso para diferenciarlo de un coach deportivo
-            }
-        }
-
-        scores = {domain: 0 for domain in lexicons}
-
-        # Contribución de cada palabra encontrada
-        words = text.split()
-        for word in words:
-            clean_word = word.strip(".,:;()").lower()
-            for domain, data in lexicons.items():
-                if clean_word in data["keywords"]:
-                    scores[domain] += data["weight"]
-
-        # Si hay empate o puntuación muy baja, devolvemos GENERAL
-        max_score = max(scores.values())
-        if max_score < 1:
-            return "GENERAL"
-        
-        # Retornamos el dominio con más "votos"
-        return max(scores, key=scores.get)
-    
-
-import re
 import numpy as np
 import json
 from typing import Dict, Any, List, Tuple, Set
 from fastembed import TextEmbedding
+from pathlib import Path
+
+_MODEL_DIR = Path(__file__).parent.parent / "models" 
 
 class DefenderRoleParser:
     def __init__(self):
         # Cargamos el modelo una sola vez en el constructor
-        self.model = TextEmbedding()
+        #self.model = TextEmbedding()
+        self.model = TextEmbedding(
+            model_name="BAAI/bge-small-en-v1.5",
+            cache_dir=_MODEL_DIR
+        )
 
         # Para detectar la primera línea
         self.role_identity_patterns = [r"Your Role:\s*(.*)", r"You are a\s*(.*)"]
@@ -353,20 +263,41 @@ class DefenderRoleParser:
         
         # Eliminamos duplicados y limpiamos puntuación final
         return list(set([l.rstrip('.:') for l in found_limits]))
-    
-    def _extract_data_sources(self, text: str) -> List[str]:
-        sources = ["PLAIN_TEXT_INPUT"]
-        # Semántica para documentos
-        doc_cat, score = self._classify_with_score(text, self.data_source_contexts)
-        if doc_cat == "DOCUMENT_INPUT" and score > 0.4:
-            sources.append("DOCUMENT_INPUT")
+
+
         
-        # RegEx para registros internos (PII / Equipos)
-        internal_patterns = [r"DOB:\s*\d{4}", r"SSN:\s*\d", r"Equipment:\s*.*\|", r"User:\s*.*\("]
-        if any(re.search(p, text, re.IGNORECASE) for p in internal_patterns):
-            sources.append("INTERNAL_RECORD")
+
+    def _extract_data_sources(self, blocks: List[Dict[str, Any]]) -> List[str]:
+        sources = {"PLAIN_TEXT_INPUT"}
+
+        for sentence in blocks:
+            evidence_of_record = sentence["evidence_of_record"]
+            # Check if evidence of record is present
+            if evidence_of_record:
+                sources.add("INTERNAL_RECORD")
+                continue
+
+            # Check if evidence of document is present
+            text = sentence["sentence"]
+            doc_cat, score = self._classify_with_score(text, self.data_source_contexts)
+            if doc_cat == "DOCUMENT_INPUT" and score > 0.4:
+                sources.add("DOCUMENT_INPUT")
             
-        return sources
+        return list(sources)        
+    
+    #def _extract_data_sources(self, text: str) -> List[str]:
+    #    sources = ["PLAIN_TEXT_INPUT"]
+    #    # Semántica para documentos
+    #    doc_cat, score = self._classify_with_score(text, self.data_source_contexts)
+    #    if doc_cat == "DOCUMENT_INPUT" and score > 0.4:
+    #        sources.append("DOCUMENT_INPUT")
+    #    
+    #    # RegEx para registros internos (PII / Equipos)
+    #    internal_patterns = [r"DOB:\s*\d{4}", r"SSN:\s*\d", r"Equipment:\s*.*\|", r"User:\s*.*\("]
+    #    if any(re.search(p, text, re.IGNORECASE) for p in internal_patterns):
+    #        sources.append("INTERNAL_RECORD")
+    #        
+    #    return sources
     
     
     #def _is_record(self, text: str) -> bool:
@@ -582,7 +513,8 @@ class DefenderRoleParser:
                 "constraint_class": c_class,
                 "confidence": c_conf,
                 "actions": actions,
-                "pii": pii_entities
+                "pii": pii_entities,
+                "evidence_of_record": evidence_of_record
             })
         return constraints
 
@@ -628,17 +560,17 @@ class DefenderRoleParser:
 
         # 2. Extract role name
         role_identity = self._extract_role(struct["name"])
+        
+        # 3. Extract contraints
+        constraints= self._extract_constraints(struct["blocks"])
 
-        # 3. Extract data sources
-        data_sources = self._extract_data_sources(struct["full_clean_content"])
+        # 4. Extract data sources
+        data_sources = self._extract_data_sources(constraints)
 
-        # 4. Extract Risk
+        # 5. Extract Risk
         risk_profiles = self._extract_risk_profiles(struct["full_clean_content"], data_sources)
         
-        # 5. Extract contraints
-        constraints= self._extract_constraints(struct["blocks"])
-        
-        # 4. Construcción del Diccionario Final
+        # 6. Construcción del Diccionario Final
         return {
             "identity": role_identity,
             "constraints": constraints,

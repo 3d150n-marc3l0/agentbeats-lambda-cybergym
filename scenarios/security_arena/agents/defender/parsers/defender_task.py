@@ -3,10 +3,17 @@ import numpy as np
 import json
 from typing import Dict, Any, List, Tuple
 from fastembed import TextEmbedding
+from pathlib import Path
+
+_MODEL_DIR = Path(__file__).parent.parent / "models"
 
 class DefenderTaskParser:
     def __init__(self):
-        self.model = TextEmbedding()
+        #self.model = TextEmbedding()
+        self.model = TextEmbedding(
+            model_name="BAAI/bge-small-en-v1.5",
+            cache_dir=_MODEL_DIR
+        )
 
         # Para detectar la primera línea
         self.task_identity_patterns = [r"Your Task:\s*(.*)"]
@@ -444,6 +451,8 @@ class DefenderTaskParser:
                 "constraint_class": c_class,
                 "confidence": c_conf,
                 "actions": actions,
+                "pii": pii_entities,
+                "evidence_of_record": evidence_of_record
             })
         
         return constraints
