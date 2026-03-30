@@ -5,7 +5,7 @@ from typing import Dict, Any, List, Tuple, Set
 from fastembed import TextEmbedding
 from pathlib import Path
 
-_MODEL_DIR = Path(__file__).parent.parent / "models" 
+#_MODEL_DIR = Path(__file__).parent.parent / "models" 
 
 class DefenderRoleParser:
     def __init__(self):
@@ -13,7 +13,7 @@ class DefenderRoleParser:
         #self.model = TextEmbedding()
         self.model = TextEmbedding(
             model_name="BAAI/bge-small-en-v1.5",
-            cache_dir=_MODEL_DIR
+            #cache_dir=_MODEL_DIR
         )
 
         # Para detectar la primera línea

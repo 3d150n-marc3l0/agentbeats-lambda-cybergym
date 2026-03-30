@@ -5,14 +5,14 @@ from typing import Dict, Any, List, Tuple
 from fastembed import TextEmbedding
 from pathlib import Path
 
-_MODEL_DIR = Path(__file__).parent.parent / "models"
+#_MODEL_DIR = Path(__file__).parent.parent / "models"
 
 class DefenderTaskParser:
     def __init__(self):
         #self.model = TextEmbedding()
         self.model = TextEmbedding(
             model_name="BAAI/bge-small-en-v1.5",
-            cache_dir=_MODEL_DIR
+            #cache_dir=_MODEL_DIR
         )
 
         # Para detectar la primera línea
@@ -145,7 +145,7 @@ class DefenderTaskParser:
         structured_lines = []
         current_sentence = ""
         item_pattern = re.compile(r'^\s*(?:[-*•]|\d+[.)]|[a-zA-Z][.)])\s+')
-        
+
         # Procesamos desde la segunda línea
         remaining_lines = lines[1:] if len(lines) > 1 else []
         
