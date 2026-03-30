@@ -1,0 +1,1 @@
+scenarios/security_arena/agents/defender/models/models--qdrant--bge-small-en-v1.5-onnx-q/blobs/* filter=lfs diff=lfs merge=lfs -text
