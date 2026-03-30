@@ -216,6 +216,7 @@ class Defender(AgentExecutor):
             action, message = "ALLOW", None
             guardrail_input_config = self._build_guardrails_input(scenario_conf)
             if guardrail_input_config:
+                logger.info(f"[GUARDRAIL-INPUT] STARTING...")
                 # 2.1 Add Sanitized Input
                 guardrail_input_config["user_input"] = sanitized_text
 
@@ -250,6 +251,7 @@ class Defender(AgentExecutor):
                 action, response_output = "SUCCESS", assistant_output
                 guardrail_output_config = self._build_guardrails_output(scenario_conf)
                 if guardrail_output_config and assistant_output:
+                    logger.info(f"[GUARDRAIL-OUTPUT] STARTING...")
                     # Add Assistant Output
                     guardrail_output_config["assistant_output"] = response_output
 
