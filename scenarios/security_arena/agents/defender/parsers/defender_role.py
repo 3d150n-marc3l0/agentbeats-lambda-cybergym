@@ -139,28 +139,7 @@ class DefenderRoleParser:
         structured_lines = []
         current_sentence = ""
         item_pattern = re.compile(r'^\s*(?:[-*•]|\d+[.)]|[a-zA-Z][.)])\s+')
-        """
-        lines = lines[1:] if len(lines) > 1 else lines
-        for line in lines:
-            line = self._clean_sentence(line)
-            if item_pattern.match(line):
-            #if line.startswith(('-', '*', '•')):
-                if current_sentence:
-                    structured_lines.append(current_sentence)
-                    current_sentence = ""
-                structured_lines.append(line)
-            else:
-                if current_sentence:
-                    current_sentence += " " + line
-                else:
-                    current_sentence = line
-                
-                if current_sentence.endswith(('.', ':')):
-                    structured_lines.append(current_sentence)
-                    current_sentence = ""
-        if current_sentence:
-            structured_lines.append(current_sentence)
-        """
+        
         # Procesamos desde la segunda línea
         remaining_lines = lines[1:] if len(lines) > 1 else []
         
