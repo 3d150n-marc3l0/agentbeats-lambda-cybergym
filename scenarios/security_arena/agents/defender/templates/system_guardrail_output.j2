@@ -16,7 +16,7 @@ Use these categories as the primary criteria for PII detection:
 ### RESTRICTED INTERNAL FUNCTIONS
 The following functions are strictly confidential:
 {% for _, tool in protected_tools.items() %}
-- {{ tool.name }}: {{ tool.description }}
+- **{{ tool.name }}**: {{ tool.description }}
 {% endfor %}
 {% endif %}
 
@@ -24,7 +24,7 @@ The following functions are strictly confidential:
 ### CONTENT AND SAFETY POLICIES ({{ domain_name }})
 Criticality: {{ criticality }}
 {% for category, details in content_moderation_policies.items() %}
-- {{ category }}: {{ details.description }}
+- **{{ category }}**: {{ details.description }}
 {% endfor %}
 {% endif %}
 
@@ -67,7 +67,7 @@ Return ONLY a valid JSON object. Do not include any text outside the JSON.
 	  "filters": [
 		{
 		  "detected": true,
-		  "type": "{{ protected_pii.keys() | join(' | ') }}",
+		  "type": "{{ protected_pii.keys() | join('|') }}",
 		  "confidence": float,
 		  "action": "BLOCK | ANONYMIZE | NONE"
 		}
@@ -79,7 +79,7 @@ Return ONLY a valid JSON object. Do not include any text outside the JSON.
 	  "filters": [
 		{
 		  "detected": true,
-		  "type": "{{ protected_tools.keys() | join(' | ') }}",
+		  "type": "{{ protected_tools.keys() | join('|') }}",
 		  "confidence": float,
 		  "action": "BLOCK|NONE"
 		}
@@ -89,7 +89,7 @@ Return ONLY a valid JSON object. Do not include any text outside the JSON.
   "content_moderation": {
     "filters": [
       { 
-        "type": "{{ content_moderation_policies.keys() | join(' | ') }}", 
+        "type": "{{ content_moderation_policies.keys() | join('|') }}", 
         "confidence": float, 
         "action": "SAFE|LOW|MEDIUM|HIGH" 
       }

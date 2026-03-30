@@ -33,7 +33,7 @@ def enforce_input_policies(llm_audit_json, governance_registry) -> Tuple[str, st
         if policy:
             # Si es muy evidente, bloqueamos el tema
             if action == "HIGH" and confidence >= policy["thresholds"]["block"]:
-                return "BLOCK_TOPIC", policy["messages"]["user_block"]
+                return "BLOCK", policy["messages"]["user_block"]
             
             # Si es dudoso, activamos el "Warn Mode" para el Paso 2 (Asistente)
             if action == "MEDIUM" and confidence >= policy["thresholds"]["steer"]:

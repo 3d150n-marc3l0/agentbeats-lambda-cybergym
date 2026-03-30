@@ -99,9 +99,9 @@ class Defender(AgentExecutor):
         )
         self.model = model
 
-    def _render(self, template, ctx: ScenarioContext) -> str:
+    def _render(self, template, ctx: ScenarioContext, **extra) -> str:
         """Render a Jinja2 template with the scenario context."""
-        return template.render(**vars(ctx))
+        return template.render(**vars(ctx), **extra)
 
     async def _generate(self, system: str, user: str) -> str:
         """Generate a response from the LLM."""
@@ -129,7 +129,11 @@ class Defender(AgentExecutor):
             logger.info(f"[Processing] QUESTION: {ctx.formatted_input}")
 
             # 1. Parsing description role and description task
-            scenario_conf = parser_defender_scenario(ctx.defender_role, ctx.defender_task)
+            scenario_conf = parser_defender_scenario(
+                ctx.defender_role, 
+                ctx.defender_task,
+                ctx.output_format
+            )
 
             # 2. Sanitizacion
             sanitized_text = preprocess_input(ctx.formatted_input)
@@ -155,20 +159,25 @@ class Defender(AgentExecutor):
                 action, message = enforce_input_policies(guardrail_input, guardrail_input_config)
                 logger.info(f"[ENFORCE-INPUT-POLICIES] ACTION: {action}, ANSWER: {message}")
             
-            if action == "BLOCK":
-                logger.info("[BLOCK] Generated response (%d chars)", len(message))
-                await updater.update_status(TaskState.completed, new_agent_text_message(message))
-            else:
+                #if action == "BLOCK":
+                #logger.info("[BLOCK] Generated response (%d chars)", len(message))
+                #await updater.update_status(TaskState.completed, new_agent_text_message(message))
+                #else:
                 # Render Jinja2 templates with context and generate response
                 new_ctx = replace(
                     ctx,
                     output_format=sanitized_text
-                )
+                ) 
                 assistant_output = await self._generate(
                     self._render(_system_template, new_ctx),
                     self._render(_user_template, new_ctx)
                 )
                 logger.info("[ASSISTENT] Generated response (%d chars)", len(assistant_output))
+                logger.info("[ASSISTENT] Generated response %s", assistant_output)
+
+                if scenario_conf["defender_output"]["type"] == "JSON":
+                    assistant_output = extract_json(assistant_output)
+                    assistant_output = json.dumps(assistant_output, indent=4)
 
                 # Guardrail Output
                 action, response_output = "SUCCESS", assistant_output
@@ -179,6 +188,8 @@ class Defender(AgentExecutor):
                     guardrail_output_config["assistant_output"] = response_output
 
                     # 2.1 Run Guardrail Input
+                    template = _system_guardrail_output_template.render(**guardrail_output_config)
+                    #logger.info(f"[GUARDRAIL-OUTPUT] template: {template}")
                     guardrail_output = await self._generate(
                         _system_guardrail_output_template.render(**guardrail_output_config),
                         _user_guardrail_output_template.render(**guardrail_output_config)

@@ -2,7 +2,7 @@ import re
 import numpy as np
 import json
 from typing import Dict, Any, List, Tuple
-from fastembed import TextEmbedding
+# from fastembed import TextEmbedding
 from pathlib import Path
 
 #_MODEL_DIR = Path(__file__).parent.parent / "models"
@@ -10,10 +10,10 @@ from pathlib import Path
 class DefenderTaskParser:
     def __init__(self):
         #self.model = TextEmbedding()
-        self.model = TextEmbedding(
-            model_name="BAAI/bge-small-en-v1.5",
-            #cache_dir=_MODEL_DIR
-        )
+        # self.model = TextEmbedding(
+        #     model_name="BAAI/bge-small-en-v1.5",
+        #     #cache_dir=_MODEL_DIR
+        # )
 
         # Para detectar la primera línea
         self.task_identity_patterns = [r"Your Task:\s*(.*)"]
@@ -79,12 +79,12 @@ class DefenderTaskParser:
 
         # Taxonomía Profesional de Tareas (Contextos para Embeddings)
         self.task_categories = {
-            "SHOPPING_ASSISTANT": "shopping needs, product discovery, purchase, e-commerce, buy items, cart management, find products",
-            "PRIVACY_PROTECTOR": "protect user privacy, data safety, healthcare privacy, sensitive information guard",
-            "FINANCIAL_ADVISOR": "investment, banking, stock market, financial risk, portfolio management",
-            "FITNESS_COACH": "workout, training, gym, exercise, athlete, physical health",
-            "HR_RECRUITER": "recruitment, hiring, resume evaluation, candidate ranking, human resources",
-            "RISK_ASSESSOR": "evaluate risk, business legitimacy, regulatory compliance, red flags"
+            "SHOPPING_ASSISTANT": "shopping assistant needs product discovery purchase e-commerce buy items cart management find products",
+            "PRIVACY_PROTECTOR": "privacy protector user data safety healthcare sensitive information guard",
+            "FINANCIAL_ADVISOR": "financial advisor investment banking stock market money finance trading risk portfolio management",
+            "FITNESS_COACH": "fitness coach workout training gym exercise athlete physical health",
+            "HR_RECRUITER": "hr recruiter recruitment hiring resume evaluation candidate ranking human resources",
+            "RISK_ASSESSOR": "risk assessor evaluate business legitimacy regulatory compliance red flags"
         }
 
         # Taxonomía de Restricciones (Constraint Classes)
@@ -106,20 +106,30 @@ class DefenderTaskParser:
         }
 
     def _classify_with_score(self, text: str, category_map: Dict[str, str]) -> Tuple[str, float]:
-        """Clasifica y devuelve la mejor etiqueta con su score de confianza."""
-        best_label, highest_sim = "UNSPECIFIED", -1.0
-        text_vec = list(self.model.embed([text]))[0]
+        """Clasifica y devuelve la mejor etiqueta con su score de confianza basado en keywords."""
+        text = text.lower()
+        # Tokenización simple removiendo caracteres no alfanuméricos
+        text_words = set(re.findall(r'\w+', text))
+        
+        best_label, highest_score = "UNSPECIFIED", 0.0
+        
         for label, context in category_map.items():
-            context_vec = list(self.model.embed([context]))[0]
-            sim = np.dot(text_vec, context_vec) / (np.linalg.norm(text_vec) * np.linalg.norm(context_vec))
+            # El contexto son semillas de palabras clave
+            context_words = set(re.findall(r'\w+', context.lower()))
+            if not context_words:
+                continue
             
-            if sim > highest_sim:
-                highest_sim, best_label = sim, label
+            # Intersección: palabras que están en ambos
+            matches = text_words.intersection(context_words)
             
-            # Debug interno (opcional)
-            # print(f"[DEBUG] Text: {text[:30]}... | Label: {best_label} | Score: {highest_sim:.4f}")
+            # Puntuación: Ratio de palabras clave encontradas vs total de palabras clave en la categoría
+            score = len(matches) / len(context_words) if context_words else 0.0
             
-        return best_label, round(float(highest_sim), 4)
+            if score > highest_score:
+                highest_score = score
+                best_label = label
+            
+        return best_label, round(float(highest_score), 4)
     
     #def _is_record(self, text: str) -> bool:
     #    internal_patterns = [r"DOB:\s*\d{4}", r"SSN:\s*\d", r"Equipment:\s*.*\|", r"User:\s*.*\("]
@@ -461,5 +471,5 @@ if __name__ == "__main__":
     Generate workout routines based on user requests.
     All intensity values must be ≤100% for safety."""
     
-    result = parser.parse_task(gym_text)
+    result = parser.parse(gym_text)
     print(json.dumps(result, indent=2))

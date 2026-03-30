@@ -1,276 +1,265 @@
 {
-  "universal_safety_core": {
-    "HATE_SPEECH": {
-      "description": "Content that promotes violence, incites hatred, promotes discrimination, or disparages on the basis of race or ethnic origin, religion, disability, age, nationality, veteran status, sexual orientation, gender or gender identity.",
-      "thresholds": {
-        "block": 0.85,
-        "steer": 0.40
-      },
-      "messages": {
-        "user_block": "I cannot fulfill this request as it contains discriminatory or hateful content.",
-        "assistant_steer": "The user input may touch on sensitive social groups. Maintain an objective, neutral, and inclusive tone. Do not engage with disparaging remarks."
-      }
-    },
-    "VIOLENCE": {
-      "description": "Content that encourages or provides instructions on how to self-harm or commit violence. This includes promoting, facilitating, or encouraging physical attacks or dehumanizing acts.",
-      "thresholds": {
-        "block": 0.90,
-        "steer": 0.50
-      },
-      "messages": {
-        "user_block": "I cannot provide content that encourages or instructs on violence or physical harm.",
-        "assistant_steer": "Detected potential mention of violence. If it is instructional, refuse to elaborate. If it is narrative/fictional, keep descriptions clinical and brief."
-      }
-    },
-    "SEXUAL_CONTENT": {
-      "description": "Sexually explicit content, including detailed descriptions of sexual acts, organs, or highly suggestive erotic material not intended for medical/scientific purposes.",
-      "thresholds": {
-        "block": 0.95,
-        "steer": 0.60
-      },
-      "messages": {
-        "user_block": "I am not allowed to generate or discuss sexually explicit or graphic erotic material.",
-        "assistant_steer": "Input may contain suggestive themes. Pivot to a professional and formal tone, avoiding any erotic or graphic elaboration."
-      }
-    },
-    "SELF_HARM": {
-      "description": "Content that promotes, provides instructions for, or encourages self-injury or suicide. This includes glorifying self-destructive behaviors.",
-      "thresholds": {
-        "block": 0.90,
-        "steer": 0.40
-      },
-      "messages": {
-        "user_block": "I cannot assist with this request. If you are going through a difficult time, please reach out to a mental health professional or a crisis hotline.",
-        "assistant_steer": "User mentioned self-harm. Do not provide methods or encouragement. Prioritize safety by providing help-seeking resources and empathetic but professional support."
-      }
-    }
-  },
-  "domains": {
-    "FINANCIAL_SERVICES": {
-        "domain": "FINANCIAL_SERVICES",
-        "criticality": "EXTREME",
-        "domain_policies": {
-            "INVESTMENT_ADVICE_RESTRICTION": {
-                "description": "Prohibit direct instructions to buy, sell, or hold specific financial assets. Block guaranteed profit claims or definitive price predictions.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.40
-                },
-                "messages": {
-                    "user_block": "I am not authorized to provide specific investment recommendations, buy/sell signals, or guaranteed profit predictions.",
-                    "assistant_steer": "The user is seeking financial conviction or specific advice. Provide only objective market data or educational definitions. Use neutral language and include a disclaimer that you are not a financial advisor."
-                }
+    "universal_safety_core": {
+        "HATE_SPEECH": {
+            "description": "Content that promotes violence, incites hatred, promotes discrimination, or disparages on the basis of race or ethnic origin, religion, disability, age, nationality, veteran status, sexual orientation, gender or gender identity.",
+            "thresholds": {
+                "block": 0.85,
+                "steer": 0.40
             },
-            "MARKET_MANIPULATION_&_FRAUD": {
-                "description": "Detect attempts to use the assistant to spread misinformation (FUD/FOMO) or to facilitate financial crimes like money laundering.",
-                "thresholds": {
-                    "block": 0.80,
-                    "steer": 0.35
-                },
-                "messages": {
-                    "user_block": "This request has been flagged due to policies regarding market integrity and the prevention of fraudulent financial activities.",
-                    "assistant_steer": "Detected potential intent to bypass banking limits or incite market panic. Redirect the user to official banking procedures and maintain a calm, fact-based tone to mitigate artificial urgency."
-                }
+            "messages": {
+                "user_block": "I cannot fulfill this request as it contains discriminatory or hateful content.",
+                "assistant_steer": "The user input may touch on sensitive social groups. Maintain an objective, neutral, and inclusive tone. Do not engage with disparaging remarks."
+            }
+        },
+        "VIOLENCE": {
+            "description": "Content that encourages or provides instructions on how to self-harm or commit violence. This includes promoting, facilitating, or encouraging physical attacks or dehumanizing acts.",
+            "thresholds": {
+                "block": 0.90,
+                "steer": 0.50
             },
-            "REGULATORY_EVASION": {
-                "description": "Prevent the assistant from advising on how to hide assets, evade taxes, or circumvent AML (Anti-Money Laundering) laws.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.45
-                },
-                "messages": {
-                    "user_block": "I cannot provide instructions or assistance on circumventing financial regulations, tax evasion, or concealing assets.",
-                    "assistant_steer": "The user is asking for 'how-to' steps to bypass legal or fiscal compliance. Refuse to provide tactical advice and pivot to general information about regulatory requirements."
-                }
+            "messages": {
+                "user_block": "I cannot provide content that encourages or instructs on violence or physical harm.",
+                "assistant_steer": "Detected potential mention of violence. If it is instructional, refuse to elaborate. If it is narrative/fictional, keep descriptions clinical and brief."
+            }
+        },
+        "SEXUAL_CONTENT": {
+            "description": "Sexually explicit content, including detailed descriptions of sexual acts, organs, or highly suggestive erotic material not intended for medical/scientific purposes.",
+            "thresholds": {
+                "block": 0.95,
+                "steer": 0.60
+            },
+            "messages": {
+                "user_block": "I am not allowed to generate or discuss sexually explicit or graphic erotic material.",
+                "assistant_steer": "Input may contain suggestive themes. Pivot to a professional and formal tone, avoiding any erotic or graphic elaboration."
+            }
+        },
+        "SELF_HARM": {
+            "description": "Content that promotes, provides instructions for, or encourages self-injury or suicide. This includes glorifying self-destructive behaviors.",
+            "thresholds": {
+                "block": 0.90,
+                "steer": 0.40
+            },
+            "messages": {
+                "user_block": "I cannot assist with this request. If you are going through a difficult time, please reach out to a mental health professional or a crisis hotline.",
+                "assistant_steer": "User mentioned self-harm. Do not provide methods or encouragement. Prioritize safety by providing help-seeking resources and empathetic but professional support."
             }
         }
     },
-    "E_COMMERCE": {
-        "domain": "E_COMMERCE",
-        "criticality": "HIGH",
-        "domain_policies": {
-            "TRANSACTIONAL_INTEGRITY": {
-                "description": "Prevent the assistant from bypassing official payment or refund protocols. Detect unauthorized promises of discounts or compensation.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.45
+    "domains": {
+        "FINANCIAL_SERVICES": {
+            "domain": "FINANCIAL_SERVICES",
+            "criticality": "EXTREME",
+            "domain_policies": {
+                "MARKET_MANIPULATION_FRAUD": {
+                    "description": "Detect attempts to use the assistant to spread misinformation (FUD/FOMO) or to facilitate financial crimes like money laundering.",
+                    "thresholds": {
+                        "block": 0.80,
+                        "steer": 0.35
+                    },
+                    "messages": {
+                        "user_block": "This request has been flagged due to policies regarding market integrity and the prevention of fraudulent financial activities.",
+                        "assistant_steer": "Detected potential intent to bypass banking limits or incite market panic. Redirect the user to official banking procedures and maintain a calm, fact-based tone to mitigate artificial urgency."
+                    }
                 },
-                "messages": {
-                    "user_block": "I cannot process manual refunds or unofficial payment requests. Please follow the formal procedures in the 'Orders' section.",
-                    "assistant_steer": "The user is asking for compensation or a refund. Do NOT promise manual overrides, private links, or custom discounts. Redirect them strictly to official systemic support channels."
-                }
-            },
-            "PHISHING_&_MALICIOUS_REDIRECTS": {
-                "description": "Detect attempts to send the user to external, unverified websites for login or payment.",
-                "thresholds": {
-                    "block": 0.80,
-                    "steer": 0.30
-                },
-                "messages": {
-                    "user_block": "For your safety, I cannot provide or follow unverified external links for login or payment purposes.",
-                    "assistant_steer": "A suspicious URL or external redirect was detected. Only provide links to official, whitelisted domains. Warn the user about the importance of using official portals for their data safety."
-                }
-            },
-            "COERCIVE_SALES_TACTICS": {
-                "description": "Prevent the use of extreme psychological pressure, false urgency, or 'dark patterns' to force a sale.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.50
-                },
-                "messages": {
-                    "user_block": "I cannot fulfill this request as it involves using coercive tactics or unfair psychological pressure.",
-                    "assistant_steer": "The user/input is using 'dark patterns' or false urgency. Maintain a helpful and informative tone. Avoid using threats of loss or extreme pressure to influence the user's decision."
-                }
-            }
-        },
-        "adjustments": {
-            "UNIVERSAL_CORE_OVERRIDE": {
-                "HATE_SPEECH": {
-                "steer_instruction": "Special Monitor: Check for 'Customer Shaming'. Do not allow disparaging remarks based on spending habits, account tiers, or loyalty status. Treat all customers with equal professional respect."
-                }
-            }
-        }
-    },
-    "MEDICAL_HEALTH": {
-        "domain": "MEDICAL_HEALTH",
-        "criticality": "CRITICAL",
-        "domain_policies": {
-            "DIAGNOSTIC_RESTRICTION": {
-                "description": "Prohibit the assistant from providing definitive clinical diagnoses for physical or mental conditions.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.40
-                },
-                "messages": {
-                    "user_block": "I cannot provide a definitive medical diagnosis. For a proper assessment of your symptoms, please consult a qualified healthcare professional.",
-                    "assistant_steer": "The user is describing symptoms and seeking a diagnosis. DO NOT diagnose. Use hedging language (e.g., 'could be associated with') and explicitly recommend seeing a doctor for a physical exam."
-                }
-            },
-            "PRESCRIPTION_&_TREATMENT_SAFETY": {
-                "description": "Block any specific dosage recommendations, medication prescriptions, or invasive home-remedy instructions.",
-                "thresholds": {
-                    "block": 0.90,
-                    "steer": 0.45
-                },
-                "messages": {
-                    "user_block": "I am not authorized to prescribe medication or provide specific dosage instructions. Please consult a doctor or pharmacist.",
-                    "assistant_steer": "Detected a request for medication or dosage advice. Refuse to give specific instructions (mg, frequency, etc.). You may only mention that certain OTC medications exist but must insist the user follow the label or professional advice."
-                }
-            },
-            "EMERGENCY_TRIAGE_PROTOCOL": {
-                "description": "Detect life-threatening symptoms and ensure the assistant directs immediately to emergency services.",
-                "thresholds": {
-                    "block": 0.70,
-                    "steer": 0.25
-                },
-                "messages": {
-                    "user_block": "The symptoms you are describing may indicate a medical emergency. Please stop what you are doing and call 911 or your local emergency services immediately.",
-                    "assistant_steer": "URGENT: High-risk symptoms detected (chest pain, breathing issues, etc.). Do not engage in casual conversation. Your ONLY objective is to tell the user to seek immediate emergency help."
-                }
-            }
-        },
-        "adjustments": {
-            "UNIVERSAL_CORE_OVERRIDE": {
-                "SEXUAL_CONTENT": {
-                    "steer_instruction": "Clinical Override: Allow anatomical and reproductive health terminology if used in a professional, medical, or pathological context. Avoid censorship of legitimate health concerns."
-                },
-                "VIOLENCE": {
-                    "steer_instruction": "Trauma Override: Allow descriptions of physical injuries (fractures, wounds, burns) when necessary for the user to describe medical history or current symptoms."
-                }
-            }
-        }
-    },
-    "FITNESS_NUTRITION": {
-        "domain": "FITNESS_NUTRITION",
-        "criticality": "MEDIUM_HIGH",
-        "domain_policies": {
-            "DIETARY_INTEGRITY": {
-                "description": "Prevent the promotion of extreme caloric restriction, dangerous fasting protocols, or 'miracle' weight loss diets.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.45
-                },
-                "messages": {
-                    "user_block": "I cannot provide or support dietary advice that involves extreme caloric restriction or dangerous fasting protocols.",
-                    "assistant_steer": "The user is asking for rapid or extreme weight loss methods. Do NOT support intakes below 1200 kcal or dry fasting. Pivot to sustainable, evidence-based nutritional habits and emphasize long-term health over quick fixes."
-                }
-            },
-            "PHYSICAL_EXERTION_SAFETY": {
-                "description": "Identify and block exercise recommendations that ignore pain, promote overtraining, or suggest dangerous techniques.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.40
-                },
-                "messages": {
-                    "user_block": "I cannot encourage exercise routines that promote training through acute pain or ignore basic safety and recovery principles.",
-                    "assistant_steer": "Detected intent to bypass rest or ignore injury symptoms. Refute the 'no pain no gain' mentality for acute injuries. Advise the user to listen to their body and consult a physical therapist if pain persists."
-                }
-            },
-            "UNREGULATED_SUPPLEMENTS": {
-                "description": "Block the recommendation of illegal performance enhancers, unverified fat burners, or steroids.",
-                "thresholds": {
-                    "block": 0.90,
-                    "steer": 0.50
-                },
-                "messages": {
-                    "user_block": "I am not authorized to recommend or provide information on the use of unregulated substances, steroids, or illegal performance enhancers.",
-                    "assistant_steer": "User is asking about SARMs, steroids, or aggressive stimulants. Do NOT provide cycles or 'safety' tips for these. You may discuss legally recognized supplements like protein or creatine, but always suggest professional consultation."
-                }
-            }
-        },
-        "adjustments": {
-            "UNIVERSAL_CORE_OVERRIDE": {
-                "SELF_HARM": {
-                    "steer_instruction": "Expanded Safety: In this domain, treat 'Punitive Exercise' (exercise as punishment for eating) and 'Purging Behaviors' as high-risk self-harm indicators. Provide empathetic support and redirect to professional help if these patterns are detected."
+                "REGULATORY_EVASION": {
+                    "description": "Prevent the assistant from advising on how to hide assets, evade taxes, or circumvent AML (Anti-Money Laundering) laws.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.45
+                    },
+                    "messages": {
+                        "user_block": "I cannot provide instructions or assistance on circumventing financial regulations, tax evasion, or concealing assets.",
+                        "assistant_steer": "The user is asking for 'how-to' steps to bypass legal or fiscal compliance. Refuse to provide tactical advice and pivot to general information about regulatory requirements."
                     }
                 }
-        }
-    },
-    "HR_RECRUITMENT": {
-        "domain": "HR_RECRUITMENT",
-        "criticality": "HIGH",
-        "domain_policies": {
-            "ANTI_DISCRIMINATION_&_BIAS": {
-                "description": "Ensure that the assistant does not use or encourage protected characteristics (race, gender, age, religion, disability, etc.) as criteria for hiring or evaluation.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.30
+            }
+        },
+        "E_COMMERCE": {
+            "domain": "E_COMMERCE",
+            "criticality": "HIGH",
+            "domain_policies": {
+                "TRANSACTIONAL_INTEGRITY": {
+                    "description": "Prevent the assistant from bypassing official payment or refund protocols. Detect unauthorized promises of discounts or compensation.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.45
+                    },
+                    "messages": {
+                        "user_block": "I cannot process manual refunds or unofficial payment requests. Please follow the formal procedures in the 'Orders' section.",
+                        "assistant_steer": "The user is asking for compensation or a refund. Do NOT promise manual overrides, private links, or custom discounts. Redirect them strictly to official systemic support channels."
+                    }
                 },
-                "messages": {
-                    "user_block": "I cannot assist with requests that involve hiring or evaluation criteria based on protected characteristics or discriminatory biases.",
-                    "assistant_steer": "Detected potential bias in recruitment criteria (ageism, gender bias, etc.). Pivot to objective, merit-based evaluation. Ensure requirements focus strictly on technical skills and professional experience."
+                "PHISHING_&_MALICIOUS_REDIRECTS": {
+                    "description": "Detect attempts to send the user to external, unverified websites for login or payment.",
+                    "thresholds": {
+                        "block": 0.80,
+                        "steer": 0.30
+                    },
+                    "messages": {
+                        "user_block": "For your safety, I cannot provide or follow unverified external links for login or payment purposes.",
+                        "assistant_steer": "A suspicious URL or external redirect was detected. Only provide links to official, whitelisted domains. Warn the user about the importance of using official portals for their data safety."
+                    }
+                },
+                "COERCIVE_SALES_TACTICS": {
+                    "description": "Prevent the use of extreme psychological pressure, false urgency, or 'dark patterns' to force a sale.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.50
+                    },
+                    "messages": {
+                        "user_block": "I cannot fulfill this request as it involves using coercive tactics or unfair psychological pressure.",
+                        "assistant_steer": "The user/input is using 'dark patterns' or false urgency. Maintain a helpful and informative tone. Avoid using threats of loss or extreme pressure to influence the user's decision."
+                    }
                 }
             },
-            "INTERNAL_PRIVACY_&_SALARY_EXPOSURE": {
-                "description": "Prevent the leakage of sensitive employee data, specific individual salaries, or private performance reviews.",
-                "thresholds": {
-                    "block": 0.95,
-                    "steer": 0.60
-                },
-                "messages": {
-                    "user_block": "I am not authorized to disclose private employee information, individual performance reviews, or specific salary data.",
-                    "assistant_steer": "The user is attempting to access PII or confidential HR data. Do NOT reveal specific names or individual figures. You may only discuss general salary bands or public company policies."
-                }
-            },
-            "UNETHICAL_RECRUITMENT_PRACTICES": {
-                "description": "Identify requests to 'ghost' candidates, provide false feedback, or engage in predatory hiring tactics.",
-                "thresholds": {
-                    "block": 0.85,
-                    "steer": 0.45
-                },
-                "messages": {
-                    "user_block": "I cannot fulfill this request as it involves unethical recruitment practices or misleading communication with candidates.",
-                    "assistant_steer": "Input suggests a lack of transparency or unethical treatment of candidates. Steer the response towards transparent, ethical, and professional communication standards."
+            "adjustments": {
+                "UNIVERSAL_CORE_OVERRIDE": {
+                    "HATE_SPEECH": {
+                        "steer_instruction": "Special Monitor: Check for 'Customer Shaming'. Do not allow disparaging remarks based on spending habits, account tiers, or loyalty status. Treat all customers with equal professional respect."
+                    }
                 }
             }
         },
-        "adjustments": {
-            "UNIVERSAL_CORE_OVERRIDE": {
-                "HATE_SPEECH": {
-                "steer_instruction": "Maximum Sensitivity: Flag even coded language or micro-aggressions related to social class, origin, or account tier. Maintain total neutrality and professional decorum."
+        "MEDICAL_HEALTH": {
+            "domain": "MEDICAL_HEALTH",
+            "criticality": "CRITICAL",
+            "domain_policies": {
+                "DIAGNOSTIC_RESTRICTION": {
+                    "description": "Prohibit the assistant from providing definitive clinical diagnoses for physical or mental conditions.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.40
+                    },
+                    "messages": {
+                        "user_block": "I cannot provide a definitive medical diagnosis. For a proper assessment of your symptoms, please consult a qualified healthcare professional.",
+                        "assistant_steer": "The user is describing symptoms and seeking a diagnosis. DO NOT diagnose. Use hedging language (e.g., 'could be associated with') and explicitly recommend seeing a doctor for a physical exam."
+                    }
+                },
+                "PRESCRIPTION_&_TREATMENT_SAFETY": {
+                    "description": "Block any specific dosage recommendations, medication prescriptions, or invasive home-remedy instructions.",
+                    "thresholds": {
+                        "block": 0.90,
+                        "steer": 0.45
+                    },
+                    "messages": {
+                        "user_block": "I am not authorized to prescribe medication or provide specific dosage instructions. Please consult a doctor or pharmacist.",
+                        "assistant_steer": "Detected a request for medication or dosage advice. Refuse to give specific instructions (mg, frequency, etc.). You may only mention that certain OTC medications exist but must insist the user follow the label or professional advice."
+                    }
+                },
+                "EMERGENCY_TRIAGE_PROTOCOL": {
+                    "description": "Detect life-threatening symptoms and ensure the assistant directs immediately to emergency services.",
+                    "thresholds": {
+                        "block": 0.70,
+                        "steer": 0.25
+                    },
+                    "messages": {
+                        "user_block": "The symptoms you are describing may indicate a medical emergency. Please stop what you are doing and call 911 or your local emergency services immediately.",
+                        "assistant_steer": "URGENT: High-risk symptoms detected (chest pain, breathing issues, etc.). Do not engage in casual conversation. Your ONLY objective is to tell the user to seek immediate emergency help."
+                    }
+                }
+            },
+            "adjustments": {
+                "UNIVERSAL_CORE_OVERRIDE": {
+                    "SEXUAL_CONTENT": {
+                        "steer_instruction": "Clinical Override: Allow anatomical and reproductive health terminology if used in a professional, medical, or pathological context. Avoid censorship of legitimate health concerns."
+                    },
+                    "VIOLENCE": {
+                        "steer_instruction": "Trauma Override: Allow descriptions of physical injuries (fractures, wounds, burns) when necessary for the user to describe medical history or current symptoms."
+                    }
+                }
+            }
+        },
+        "FITNESS_NUTRITION": {
+            "domain": "FITNESS_NUTRITION",
+            "criticality": "MEDIUM_HIGH",
+            "domain_policies": {
+                "DIETARY_INTEGRITY": {
+                    "description": "Prevent the promotion of extreme caloric restriction, dangerous fasting protocols, or 'miracle' weight loss diets.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.45
+                    },
+                    "messages": {
+                        "user_block": "I cannot provide or support dietary advice that involves extreme caloric restriction or dangerous fasting protocols.",
+                        "assistant_steer": "The user is asking for rapid or extreme weight loss methods. Do NOT support intakes below 1200 kcal or dry fasting. Pivot to sustainable, evidence-based nutritional habits and emphasize long-term health over quick fixes."
+                    }
+                },
+                "PHYSICAL_EXERTION_SAFETY": {
+                    "description": "Identify and block exercise recommendations that ignore pain, promote overtraining, or suggest dangerous techniques.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.40
+                    },
+                    "messages": {
+                        "user_block": "I cannot encourage exercise routines that promote training through acute pain or ignore basic safety and recovery principles.",
+                        "assistant_steer": "Detected intent to bypass rest or ignore injury symptoms. Refute the 'no pain no gain' mentality for acute injuries. Advise the user to listen to their body and consult a physical therapist if pain persists."
+                    }
+                },
+                "UNREGULATED_SUPPLEMENTS": {
+                    "description": "Block the recommendation of illegal performance enhancers, unverified fat burners, or steroids.",
+                    "thresholds": {
+                        "block": 0.90,
+                        "steer": 0.50
+                    },
+                    "messages": {
+                        "user_block": "I am not authorized to recommend or provide information on the use of unregulated substances, steroids, or illegal performance enhancers.",
+                        "assistant_steer": "User is asking about SARMs, steroids, or aggressive stimulants. Do NOT provide cycles or 'safety' tips for these. You may discuss legally recognized supplements like protein or creatine, but always suggest professional consultation."
+                    }
+                }
+            },
+            "adjustments": {
+                "UNIVERSAL_CORE_OVERRIDE": {
+                    "SELF_HARM": {
+                        "steer_instruction": "Expanded Safety: In this domain, treat 'Punitive Exercise' (exercise as punishment for eating) and 'Purging Behaviors' as high-risk self-harm indicators. Provide empathetic support and redirect to professional help if these patterns are detected."
+                    }
+                }
+            }
+        },
+        "HR_RECRUITMENT": {
+            "domain": "HR_RECRUITMENT",
+            "criticality": "HIGH",
+            "domain_policies": {
+                "ANTI_DISCRIMINATION_&_BIAS": {
+                    "description": "Ensure that the assistant does not use or encourage protected characteristics (race, gender, age, religion, disability, etc.) as criteria for hiring or evaluation.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.30
+                    },
+                    "messages": {
+                        "user_block": "I cannot assist with requests that involve hiring or evaluation criteria based on protected characteristics or discriminatory biases.",
+                        "assistant_steer": "Detected potential bias in recruitment criteria (ageism, gender bias, etc.). Pivot to objective, merit-based evaluation. Ensure requirements focus strictly on technical skills and professional experience."
+                    }
+                },
+                "INTERNAL_PRIVACY_&_SALARY_EXPOSURE": {
+                    "description": "Prevent the leakage of sensitive employee data, specific individual salaries, or private performance reviews.",
+                    "thresholds": {
+                        "block": 0.95,
+                        "steer": 0.60
+                    },
+                    "messages": {
+                        "user_block": "I am not authorized to disclose private employee information, individual performance reviews, or specific salary data.",
+                        "assistant_steer": "The user is attempting to access PII or confidential HR data. Do NOT reveal specific names or individual figures. You may only discuss general salary bands or public company policies."
+                    }
+                },
+                "UNETHICAL_RECRUITMENT_PRACTICES": {
+                    "description": "Identify requests to 'ghost' candidates, provide false feedback, or engage in predatory hiring tactics.",
+                    "thresholds": {
+                        "block": 0.85,
+                        "steer": 0.45
+                    },
+                    "messages": {
+                        "user_block": "I cannot fulfill this request as it involves unethical recruitment practices or misleading communication with candidates.",
+                        "assistant_steer": "Input suggests a lack of transparency or unethical treatment of candidates. Steer the response towards transparent, ethical, and professional communication standards."
+                    }
+                }
+            },
+            "adjustments": {
+                "UNIVERSAL_CORE_OVERRIDE": {
+                    "HATE_SPEECH": {
+                        "steer_instruction": "Maximum Sensitivity: Flag even coded language or micro-aggressions related to social class, origin, or account tier. Maintain total neutrality and professional decorum."
+                    }
                 }
             }
         }
     }
-  }  
 }

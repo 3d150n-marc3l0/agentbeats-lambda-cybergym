@@ -11,7 +11,7 @@ def parser_defender_scenario(defender_role_desc: str, defender_task_desc: str, d
         defender_role = role_parser.parse(defender_role_desc)
         task_parser = DefenderTaskParser()
         defender_task = task_parser.parse(defender_task_desc)
-        defender_output = ""
+        defender_output = "NATURAL"
         if defender_output_format:
             task_parser = DefenderOutputFormatParser()
             defender_output = task_parser.parse(defender_output_format)

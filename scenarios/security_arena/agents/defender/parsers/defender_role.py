@@ -2,7 +2,7 @@ import re
 import numpy as np
 import json
 from typing import Dict, Any, List, Tuple, Set
-from fastembed import TextEmbedding
+# from fastembed import TextEmbedding
 from pathlib import Path
 
 #_MODEL_DIR = Path(__file__).parent.parent / "models" 
@@ -11,10 +11,10 @@ class DefenderRoleParser:
     def __init__(self):
         # Cargamos el modelo una sola vez en el constructor
         #self.model = TextEmbedding()
-        self.model = TextEmbedding(
-            model_name="BAAI/bge-small-en-v1.5",
-            #cache_dir=_MODEL_DIR
-        )
+        # self.model = TextEmbedding(
+        #     model_name="BAAI/bge-small-en-v1.5",
+        #     #cache_dir=_MODEL_DIR
+        # )
 
         # Para detectar la primera línea
         self.role_identity_patterns = [r"Your Role:\s*(.*)", r"You are a\s*(.*)"]
@@ -105,19 +105,31 @@ class DefenderRoleParser:
         }
     
     def _classify_with_score(self, text: str, category_map: Dict[str, str]) -> tuple:
-        """Devuelve la categoría y su puntuación de confianza."""
-        text_vec = list(self.model.embed([text]))[0]
+        """Devuelve la categoría y su puntuación de confianza basándose en palabras clave."""
+        text = text.lower()
+        # Tokenización simple removiendo caracteres no alfanuméricos
+        text_words = set(re.findall(r'\w+', text))
+        
         best_cat = "UNSPECIFIED"
-        highest_sim = -1.0
+        highest_score = 0.0
         
         for category, context in category_map.items():
-            context_vec = list(self.model.embed([context]))[0]
-            sim = np.dot(text_vec, context_vec) / (np.linalg.norm(text_vec) * np.linalg.norm(context_vec))
-            if sim > highest_sim:
-                highest_sim = sim
+            # El contexto son semillas de palabras clave
+            context_words = set(re.findall(r'\w+', context.lower()))
+            if not context_words:
+                continue
+            
+            # Intersección: palabras que están en ambos
+            matches = text_words.intersection(context_words)
+            
+            # Puntuación: Ratio de palabras clave encontradas vs total de palabras clave en la categoría
+            score = len(matches) / len(context_words) if context_words else 0.0
+            
+            if score > highest_score:
+                highest_score = score
                 best_cat = category
 
-        return best_cat, round(float(highest_sim), 4) 
+        return best_cat, round(float(highest_score), 4)
     
 
     def _clean_sentence(self, text: str) -> str:
@@ -263,36 +275,6 @@ class DefenderRoleParser:
                 sources.add("DOCUMENT_INPUT")
             
         return list(sources)        
-    
-    #def _extract_data_sources(self, text: str) -> List[str]:
-    #    sources = ["PLAIN_TEXT_INPUT"]
-    #    # Semántica para documentos
-    #    doc_cat, score = self._classify_with_score(text, self.data_source_contexts)
-    #    if doc_cat == "DOCUMENT_INPUT" and score > 0.4:
-    #        sources.append("DOCUMENT_INPUT")
-    #    
-    #    # RegEx para registros internos (PII / Equipos)
-    #    internal_patterns = [r"DOB:\s*\d{4}", r"SSN:\s*\d", r"Equipment:\s*.*\|", r"User:\s*.*\("]
-    #    if any(re.search(p, text, re.IGNORECASE) for p in internal_patterns):
-    #        sources.append("INTERNAL_RECORD")
-    #        
-    #    return sources
-    
-    
-    #def _is_record(self, text: str) -> bool:
-    #    internal_patterns = [r"DOB:\s*\d{4}", r"SSN:\s*\d", r"Equipment:\s*.*\|", r"User:\s*.*\("]
-    #    is_record = any(re.search(p, text, re.IGNORECASE) for p in internal_patterns)
-    #    return is_record
-    
-    #def _detect_pii2(self, text: str) -> dict:
-    #    """Retorna un diccionario con las entidades encontradas y su categoría."""
-    #    detections = {}
-    #    for category, pattern in self.pii_patterns.items():
-    #        matches = re.findall(pattern, text, re.IGNORECASE)
-    #        if matches:
-    #            # Limpiamos los matches si son tuplas (en el caso de grupos de captura)
-    #            detections[category] = [m if isinstance(m, str) else m[0] for m in matches]
-    #    return detections
     
     def _detect_pii(self, text: str):
         results = []
