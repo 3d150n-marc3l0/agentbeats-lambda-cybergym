@@ -1,0 +1,15 @@
+{# 
+  Variables:
+  - user_input: The raw message from the end user to be audited.
+#}
+
+[AUDIT_REQUEST]
+Analyze the following user input strictly against the security policies and domain rules defined in your SYSTEM_PROMPT.
+
+USER_INPUT_TO_EVALUATE:
+"""
+{{ user_input }}
+"""
+
+[INSTRUCTION]
+Execute your classification logic now. Provide your assessment in the mandated JSON format, including "detected_policy", "confidence_score", and "action_recommendation".
