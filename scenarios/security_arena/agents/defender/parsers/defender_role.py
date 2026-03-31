@@ -78,8 +78,8 @@ class DefenderRoleParser:
             "FITNESS_NUTRITION": "workout training exercise gym fitness athlete coach sports",
             "FINANCIAL_SERVICES": "banking investment money finance trading stock market accounting",
             "HR_RECRUITMENT": "human resources recruiting hiring employee payroll workplace onboarding",
-            "PSYCHOLOGY": "mental health therapy psychology counseling therapist psychiatrist",
-            "CHEMISTRY": "chemistry chemical laboratory molecules reaction science lab",
+            #"PSYCHOLOGY": "mental health therapy psychology counseling therapist psychiatrist",
+            #"CHEMISTRY": "chemistry chemical laboratory molecules reaction science lab",
             #"E_COMMERCE": "shopping retail order shipping checkout storefront catalog refund customer store",
             #"GENERAL": "general purpose assistant common tasks help information"
         }
