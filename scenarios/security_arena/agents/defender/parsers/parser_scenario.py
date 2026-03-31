@@ -15,7 +15,7 @@ def parser_defender_scenario(defender_role_desc: str, defender_task_desc: str, d
         if defender_output_format:
             task_parser = DefenderOutputFormatParser()
             defender_output = task_parser.parse(defender_output_format)
-            print(f"Defender output format: {defender_output}")
+            #print(f"Defender output format: {defender_output}")
         return  {
             "defender_role": defender_role,
             "defender_task": defender_task,
