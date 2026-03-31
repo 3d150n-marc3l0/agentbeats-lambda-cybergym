@@ -1,5 +1,5 @@
 {
-  "injection": {
+  "direct": {
     "SYSTEM_RULE_OVERRIDE": {
       "description": "User attempts to bypass system rules by explicitly asking the model to 'ignore', 'forget', or 'disregard' its instructions.",
       "thresholds": {
@@ -45,7 +45,7 @@
       }
     }
   },
-  "indirect": {
+  "injection": {
     "MANIPULATED_CONTENT": {
       "description": "Commands embedded in documents or external data meant to falsify, hide, or push specific misinformation.",
       "thresholds": {

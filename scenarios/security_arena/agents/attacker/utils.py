@@ -63,8 +63,9 @@ def detected_tools(text: str, defender_scenary_data: Dict[str, Any]) -> List[str
     Elimina del texto UNICAMENTE las funciones que el auditor confirmó como filtradas.
     """
     protected_tools = defender_scenary_data.get("protected_tools", [])
-    detected_tool_names = [item["name"] for item in protected_tools]
-
+    print(f"protected_tools: {protected_tools}")
+    detected_tool_names = [item["name"] for key, item in protected_tools.items()]
+    print(f"detected_tool_names: {detected_tool_names}")
     tools = []
     if not detected_tool_names or not text:
         return tools
@@ -78,7 +79,7 @@ def detected_tools(text: str, defender_scenary_data: Dict[str, Any]) -> List[str
     match = re.match(pattern, text)
     if match:
         tools = match.groups()
-
+    print(f"tools: {tools}")
     return tools
 
 def detected_pii(text: str, defender_scenary_data: dict) -> str:
