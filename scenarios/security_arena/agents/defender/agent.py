@@ -166,18 +166,25 @@ class Defender(AgentExecutor):
                 # Render Jinja2 templates with context and generate response
                 new_ctx = replace(
                     ctx,
-                    output_format=sanitized_text
+                    formatted_input=sanitized_text
                 ) 
+                system_prompt = self._render(_system_template, new_ctx)
+                logger.info(f"[SYSTEM-PROMPT] {system_prompt}")
+                user_prompt = self._render(_user_template, new_ctx)
+                logger.info(f"[USER-PROMPT] {user_prompt}")
                 assistant_output = await self._generate(
-                    self._render(_system_template, new_ctx),
-                    self._render(_user_template, new_ctx)
+                    system_prompt,
+                    user_prompt
                 )
                 logger.info("[ASSISTENT] Generated response (%d chars)", len(assistant_output))
                 logger.info("[ASSISTENT] Generated response %s", assistant_output)
 
                 if scenario_conf["defender_output"]["type"] == "JSON":
-                    assistant_output = extract_json(assistant_output)
-                    assistant_output = json.dumps(assistant_output, indent=4)
+                    try:
+                        assistant_output = extract_json(assistant_output)
+                        assistant_output = json.dumps(assistant_output, indent=4)
+                    except Exception as e:
+                        logger.error(f"[ERROR] Failed to extract JSON: {e}")
 
                 # Guardrail Output
                 action, response_output = "SUCCESS", assistant_output
