@@ -63,9 +63,9 @@ def detected_tools(text: str, defender_scenary_data: Dict[str, Any]) -> List[str
     Elimina del texto UNICAMENTE las funciones que el auditor confirmó como filtradas.
     """
     protected_tools = defender_scenary_data.get("protected_tools", [])
-    print(f"protected_tools: {protected_tools}")
+    print(f"[DETECTED TOOLS] protected_tools: {protected_tools}")
     detected_tool_names = [item["name"] for key, item in protected_tools.items()]
-    print(f"detected_tool_names: {detected_tool_names}")
+    print(f"[DETECTED TOOLS] detected_tool_names: {detected_tool_names}")
     tools = []
     if not detected_tool_names or not text:
         return tools
@@ -79,7 +79,7 @@ def detected_tools(text: str, defender_scenary_data: Dict[str, Any]) -> List[str
     match = re.match(pattern, text)
     if match:
         tools = match.groups()
-    print(f"tools: {tools}")
+    print(f"[DETECTED TOOLS] tools: {tools}")
     return tools
 
 def detected_pii(text: str, defender_scenary_data: dict) -> str:
@@ -88,8 +88,8 @@ def detected_pii(text: str, defender_scenary_data: dict) -> str:
     governance_registry: Contiene el sub-diccionario 'protected_pii' con los regex.
     """
     pii_definitions = defender_scenary_data.get("protected_pii", {})
+    print(f"[DETECTED PII] pii_definitions: {pii_definitions}") 
     detected_pii_entities = []
-    #print(pii_definitions)
     for pii_type, pii_dentity_def in pii_definitions.items():
         # 1. Buscamos la definición de esa entidad en nuestro registro
         #print(f"t: {pii_type}, e: {entity_def}")
@@ -103,7 +103,7 @@ def detected_pii(text: str, defender_scenary_data: dict) -> str:
                     "type": pii_type,
                     "value": match.group(0)
                 })
-            
+    print(f"[DETECTED PII] detected_pii_entities: {detected_pii_entities}") 
     return detected_pii_entities
 
 

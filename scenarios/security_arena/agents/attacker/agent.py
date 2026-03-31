@@ -128,7 +128,7 @@ class Attacker(AgentExecutor):
                 "attacks": attacks,
                 "current_index": 0
             }
-        logger.info(f"Strategy ranking: {self.strategy_ranking}")
+        #logger.info(f"Strategy ranking: {self.strategy_ranking}")
 
     def _render(self, template, ctx: ScenarioContext, **extra) -> str:
         """Render a Jinja2 template with the scenario context and extra data."""
